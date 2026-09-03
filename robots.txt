@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hidenshadow13.github.io/profil-desa-ciledug-wetan/sitemap.xml
