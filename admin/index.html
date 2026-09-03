@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login Admin | Ciledug Wetan</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <section class="login-card">
+
+            <div class="brand">
+                <div class="brand-logo">
+                    CW
+                </div>
+
+                <h1>Admin Desa</h1>
+
+                <p>
+                    Ciledug Wetan
+                </p>
+            </div>
+
+
+            <form id="loginForm">
+
+                <div class="input-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Masukkan email admin"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="password-box">
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Masukkan password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="password-toggle"
+                            aria-label="Tampilkan password"
+                        >
+                            <svg
+                                id="eyeIcon"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    d="M2 12s3.5-7 10-7
+                                    10 7 10 7-3.5 7-10 7
+                                    S2 12 2 12Z"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="3"
+                                />
+                            </svg>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="loginMessage"
+                    class="login-message"
+                ></div>
+
+
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="login-button"
+                >
+                    <span id="loginText">
+                        Masuk
+                    </span>
+                </button>
+
+            </form>
+
+
+            <a
+                href="../index.html"
+                class="back-link"
+            >
+                ← Kembali ke Website
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <script
+        type="module"
+        src="../js/auth.js"
+    ></script>
+
+</body>
+</html>

@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Desa Ciledug Wetan</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7f6;
+            color: #1f2937;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font-family: inherit;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: #14532d;
+            color: white;
+            padding: 24px 18px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 8px 25px;
+            border-bottom: 1px solid rgba(255,255,255,.15);
+            margin-bottom: 20px;
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: white;
+            padding: 3px;
+        }
+
+        .brand h2 {
+            font-size: 17px;
+            line-height: 1.3;
+        }
+
+        .brand span {
+            display: block;
+            font-size: 12px;
+            opacity: .75;
+            margin-top: 3px;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: .6;
+            margin: 20px 10px 8px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 5px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: rgba(255,255,255,.13);
+        }
+
+        .nav-icon {
+            width: 24px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,.2);
+            background: rgba(255,255,255,.08);
+            color: white;
+            padding: 11px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: .2s;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            margin-left: 260px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 72px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .topbar h1 {
+            font-size: 21px;
+            color: #14532d;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .admin-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: #166534;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        /* =========================
+           ALERT
+        ========================= */
+
+        #alertBox {
+            display: none;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        #alertBox.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        #alertBox.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* =========================
+           DASHBOARD CARDS
+        ========================= */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0,0,0,.03);
+        }
+
+        .stat-card .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #dcfce7;
+            color: #166534;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card h3 {
+            font-size: 28px;
+            color: #14532d;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* =========================
+           SECTION
+        ========================= */
+
+        .section {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.03);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-header h2 {
+            font-size: 19px;
+            color: #14532d;
+        }
+
+        .section-header p {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 2px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 7px;
+            color: #374151;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            background: white;
+            color: #1f2937;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .form-control:focus {
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22,163,74,.08);
+        }
+
+        textarea.form-control {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        input[type="file"].form-control {
+            padding: 9px;
+        }
+
+        .help-text {
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* =========================
+           BUTTON
+        ========================= */
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .btn-primary {
+            background: #15803d;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #166534;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+
+        .btn-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .btn-warning:hover {
+            background: #fde68a;
+        }
+
+        .btn-small {
+            padding: 7px 10px;
+            font-size: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        /* =========================
+           IMAGE PREVIEW
+        ========================= */
+
+        .preview-box {
+            margin-top: 10px;
+            min-height: 10px;
+        }
+
+        .preview-image {
+            max-width: 220px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            display: block;
+        }
+
+        .preview-video {
+            max-width: 320px;
+            max-height: 200px;
+            border-radius: 8px;
+            background: #111;
+        }
+
+        /* =========================
+           ITEM GRID
+        ========================= */
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .item-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .item-media {
+            width: 100%;
+            height: 180px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .item-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-media {
+            color: #94a3b8;
+            font-size: 13px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .item-body {
+            padding: 14px;
+        }
+
+        .item-body h3 {
+            font-size: 15px;
+            color: #14532d;
+            margin-bottom: 5px;
+        }
+
+        .item-body .position {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .item-body .description {
+            font-size: 12px;
+            color: #475569;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        /* =========================
+           GOVERNMENT
+        ========================= */
+
+        .government-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        .government-preview {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .government-preview img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+        }
+
+        .government-preview-info {
+            padding: 13px;
+        }
+
+        .government-preview-info h3 {
+            color: #14532d;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .government-preview-info p {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        /* =========================
+           EMPTY
+        ========================= */
+
+        .empty-state {
+            padding: 35px 20px;
+            text-align: center;
+            color: #94a3b8;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            padding: 25px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid #dcfce7;
+            border-top-color: #15803d;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 7px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================
+           MOBILE MENU
+        ========================= */
+
+        .mobile-menu-btn {
+            display: none;
+            border: none;
+            background: #14532d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .item-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: .25s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .topbar-left {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .government-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .item-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-info span {
+                display: none;
+            }
+
+            .section {
+                padding: 16px;
+            }
+
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <img
+                src="../assets/images/logo-desa.jpg"
+                alt="Logo Desa"
+                class="brand-logo"
+                onerror="this.style.display='none'"
+            >
+
+            <div>
+                <h2>Admin Desa</h2>
+                <span>Ciledug Wetan</span>
+            </div>
+        </div>
+
+        <div class="menu-title">Menu Utama</div>
+
+        <ul class="nav-menu">
+
+            <li>
+                <a href="#dashboard" class="active">
+                    <span class="nav-icon">🏠</span>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="#pemerintahan">
+                    <span class="nav-icon">👤</span>
+                    Pemerintahan
+                </a>
+            </li>
+
+            <li>
+                <a href="#perangkat">
+                    <span class="nav-icon">👥</span>
+                    Perangkat Desa
+                </a>
+            </li>
+
+            <li>
+                <a href="#potensi">
+                    <span class="nav-icon">🏞️</span>
+                    Potensi Desa
+                </a>
+            </li>
+
+            <li>
+                <a href="#galeri">
+                    <span class="nav-icon">🖼️</span>
+                    Galeri
+                </a>
+            </li>
+
+            <li>
+                <a href="#kontak">
+                    <span class="nav-icon">📞</span>
+                    Kontak Desa
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="menu-title">Website</div>
+
+        <ul class="nav-menu">
+            <li>
+                <a href="../index.html" target="_blank">
+                    <span class="nav-icon">🌐</span>
+                    Lihat Website
+                </a>
+            </li>
+        </ul>
+
+        <button id="logoutBtn" class="logout-btn">
+            🚪 Keluar
+        </button>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    id="mobileMenuBtn"
+                    class="mobile-menu-btn"
+                    type="button"
+                >
+                    ☰
+                </button>
+
+                <h1>Dashboard Admin</h1>
+
+            </div>
+
+            <div class="admin-info">
+
+                <span id="adminEmail">
+                    Memuat...
+                </span>
+
+                <div class="admin-avatar">
+                    A
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <div class="content">
+
+            <!-- ALERT -->
+
+            <div id="alertBox"></div>
+
+
+            <!-- =========================
+                 STATISTICS
+            ========================= -->
+
+            <section id="dashboard">
+
+                <div class="dashboard-grid">
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            🖼️
+                        </div>
+
+                        <h3 id="galleryCount">
+                            0
+                        </h3>
+
+                        <p>
+                            Data Galeri
+                        </p>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            👥
+                        </div>
+
+                        <h3 id="officialCount">
+                            0
+                        </h3>
+
+                        <p>
+                            Perangkat Desa
+                        </p>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            🏞️
+                        </div>
+
+                        <h3 id="potentialCount">
+                            0
+                        </h3>
+
+                        <p>
+                            Potensi Desa
+                        </p>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            🏛️
+                        </div>
+
+                        <h3 id="governmentStatus">
+                            -
+                        </h3>
+
+                        <p>
+                            Data Pemerintahan
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 PEMERINTAHAN
+            ========================= -->
+
+            <section
+                id="pemerintahan"
+                class="section"
+            >
+
+                <div class="section-header">
+
+                    <div>
+                        <h2>
+                            👤 Pemerintahan Desa
+                        </h2>
+
+                        <p>
+                            Edit foto, nama, jabatan, dan deskripsi pimpinan pemerintahan desa.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="government-layout">
+
+                    <!-- PREVIEW -->
+
+                    <div>
+
+                        <div class="government-preview">
+
+                            <div id="governmentPreview">
+
+                                <div class="empty-state">
+                                    Belum ada foto
+                                </div>
+
+                            </div>
+
+                            <div class="government-preview-info">
+
+                                <h3 id="governmentPreviewName">
+                                    Belum diatur
+                                </h3>
+
+                                <p id="governmentPreviewRole">
+                                    -
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FORM -->
+
+                    <div>
+
+                        <form id="governmentForm">
+
+                            <div class="form-grid">
+
+                                <div class="form-group">
+
+                                    <label for="governmentName">
+                                        Nama
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="governmentName"
+                                        class="form-control"
+                                        placeholder="Contoh: Wastar"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="governmentRole">
+                                        Jabatan
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="governmentRole"
+                                        class="form-control"
+                                        placeholder="Contoh: Kuwu"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group full">
+
+                                    <label for="governmentDescription">
+                                        Deskripsi
+                                    </label>
+
+                                    <textarea
+                                        id="governmentDescription"
+                                        class="form-control"
+                                        placeholder="Tuliskan deskripsi singkat..."
+                                    ></textarea>
+
+                                </div>
+
+
+                                <div class="form-group full">
+
+                                    <label for="governmentImage">
+                                        Foto Pemerintahan
+                                    </label>
+
+                                    <input
+                                        type="file"
+                                        id="governmentImage"
+                                        class="form-control"
+                                        accept="image/*"
+                                    >
+
+                                    <div class="help-text">
+                                        Kosongkan jika ingin mempertahankan foto yang sekarang.
+                                    </div>
+
+                                    <div
+                                        id="governmentImagePreview"
+                                        class="preview-box"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-actions">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                >
+                                    💾 Simpan Pemerintahan
+                                </button>
+
+                                <button
+                                    type="button"
+                                    id="resetGovernmentBtn"
+                                    class="btn btn-secondary"
+                                >
+                                    Reset
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 PERANGKAT DESA
+            ========================= -->
+
+            <section
+                id="perangkat"
+                class="section"
+            >
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            👥 Perangkat Desa
+                        </h2>
+
+                        <p>
+                            Tambahkan, edit, atau hapus data perangkat desa.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="newOfficialBtn"
+                        class="btn btn-primary"
+                    >
+                        + Tambah Perangkat
+                    </button>
+
+                </div>
+
+
+                <!-- FORM PERANGKAT -->
+
+                <div
+                    id="officialFormWrapper"
+                    style="display:none; margin-bottom:25px;"
+                >
+
+                    <div
+                        style="
+                            background:#f8fafc;
+                            border:1px solid #e2e8f0;
+                            border-radius:10px;
+                            padding:20px;
+                        "
+                    >
+
+                        <h3
+                            id="officialFormTitle"
+                            style="
+                                color:#14532d;
+                                font-size:16px;
+                                margin-bottom:18px;
+                            "
+                        >
+                            Tambah Perangkat Desa
+                        </h3>
+
+
+                        <form id="officialForm">
+
+                            <input
+                                type="hidden"
+                                id="officialId"
+                            >
+
+                            <div class="form-grid">
+
+                                <div class="form-group">
+
+                                    <label for="officialName">
+                                        Nama
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="officialName"
+                                        class="form-control"
+                                        placeholder="Nama perangkat desa"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="officialPosition">
+                                        Jabatan
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="officialPosition"
+                                        class="form-control"
+                                        placeholder="Jabatan"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group full">
+
+                                    <label for="officialImage">
+                                        Foto
+                                    </label>
+
+                                    <input
+                                        type="file"
+                                        id="officialImage"
+                                        class="form-control"
+                                        accept="image/*"
+                                    >
+
+                                    <div class="help-text">
+                                        Kosongkan jika tidak ingin mengganti foto lama.
+                                    </div>
+
+                                    <div
+                                        id="officialImagePreview"
+                                        class="preview-box"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-actions">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                >
+                                    💾 Simpan
+                                </button>
+
+                                <button
+                                    type="button"
+                                    id="cancelOfficialBtn"
+                                    class="btn btn-secondary"
+                                >
+                                    Batal
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LIST PERANGKAT -->
+
+                <div
+                    id="officialList"
+                    class="item-grid"
+                >
+
+                    <div class="loading">
+                        <span class="spinner"></span>
+                        Memuat perangkat desa...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 POTENSI DESA
+            ========================= -->
+
+            <section
+                id="potensi"
+                class="section"
+            >
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            🏞️ Potensi Desa
+                        </h2>
+
+                        <p>
+                            Setiap potensi dapat memiliki foto atau video yang akan tampil ketika pengunjung mengklik kartu potensi.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="newPotentialBtn"
+                        class="btn btn-primary"
+                    >
+                        + Tambah Potensi
+                    </button>
+
+                </div>
+
+
+                <!-- FORM POTENSI -->
+
+                <div
+                    id="potentialFormWrapper"
+                    style="display:none; margin-bottom:25px;"
+                >
+
+                    <div
+                        style="
+                            background:#f8fafc;
+                            border:1px solid #e2e8f0;
+                            border-radius:10px;
+                            padding:20px;
+                        "
+                    >
+
+                        <h3
+                            id="potentialFormTitle"
+                            style="
+                                color:#14532d;
+                                font-size:16px;
+                                margin-bottom:18px;
+                            "
+                        >
+                            Tambah Potensi Desa
+                        </h3>
+
+
+                        <form id="potentialForm">
+
+                            <input
+                                type="hidden"
+                                id="potentialId"
+                            >
+
+
+                            <div class="form-grid">
+
+                                <div class="form-group">
+
+                                    <label for="potentialTitle">
+                                        Nama Potensi
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="potentialTitle"
+                                        class="form-control"
+                                        placeholder="Contoh: Situs Kabuyutan"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="potentialLocation">
+                                        Lokasi
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="potentialLocation"
+                                        class="form-control"
+                                        placeholder="Contoh: Desa Ciledug Wetan"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group full">
+
+                                    <label for="potentialDescription">
+                                        Deskripsi
+                                    </label>
+
+                                    <textarea
+                                        id="potentialDescription"
+                                        class="form-control"
+                                        placeholder="Deskripsi potensi desa..."
+                                    ></textarea>
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="potentialMediaType">
+                                        Jenis Media
+                                    </label>
+
+                                    <select
+                                        id="potentialMediaType"
+                                        class="form-control"
+                                    >
+
+                                        <option value="image">
+                                            Foto
+                                        </option>
+
+                                        <option value="video">
+                                            Video
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="potentialMedia">
+                                        Foto / Video
+                                    </label>
+
+                                    <input
+                                        type="file"
+                                        id="potentialMedia"
+                                        class="form-control"
+                                        accept="image/*,video/*"
+                                    >
+
+                                    <div class="help-text">
+                                        Foto: JPG, PNG, WEBP. Video: MP4/WebM. Kosongkan untuk mempertahankan media lama.
+                                    </div>
+
+                                    <div
+                                        id="potentialMediaPreview"
+                                        class="preview-box"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-actions">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                >
+                                    💾 Simpan Potensi
+                                </button>
+
+                                <button
+                                    type="button"
+                                    id="cancelPotentialBtn"
+                                    class="btn btn-secondary"
+                                >
+                                    Batal
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LIST POTENSI -->
+
+                <div
+                    id="potentialList"
+                    class="item-grid"
+                >
+
+                    <div class="loading">
+                        <span class="spinner"></span>
+                        Memuat potensi desa...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 KONTAK DESA
+            ========================= -->
+
+            <section
+                id="kontak"
+                class="section"
+            >
+
+                <div class="section-header">
+                    <div>
+                        <h2>📞 Kontak Desa</h2>
+                        <p>Kelola informasi kontak yang tampil pada website Desa Ciledug Wetan.</p>
+                    </div>
+                </div>
+
+                <form id="contactForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group full">
+                            <label for="contactAddress">Alamat Kantor Desa</label>
+                            <textarea id="contactAddress" class="form-control" rows="3" placeholder="Alamat kantor desa"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactPhone">Telepon</label>
+                            <input type="text" id="contactPhone" class="form-control" placeholder="Nomor telepon">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactWhatsapp">WhatsApp</label>
+                            <input type="text" id="contactWhatsapp" class="form-control" placeholder="Nomor WhatsApp">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactEmail">Email</label>
+                            <input type="email" id="contactEmail" class="form-control" placeholder="Email resmi desa">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactOfficeHours">Jam Pelayanan</label>
+                            <input type="text" id="contactOfficeHours" class="form-control" placeholder="Contoh: 08.00 – 15.00">
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="contactDescription">Keterangan</label>
+                            <textarea id="contactDescription" class="form-control" rows="4" placeholder="Keterangan kontak dan pelayanan desa"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 Simpan Kontak</button>
+                        <button type="button" id="resetContactBtn" class="btn btn-secondary">Reset</button>
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- =========================
+                 GALERI
+            ========================= -->
+
+            <section
+                id="galeri"
+                class="section"
+            >
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            🖼️ Galeri Desa
+                        </h2>
+
+                        <p>
+                            Upload foto atau video untuk ditampilkan pada bagian galeri website.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="galleryForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="galleryTitle">
+                                Judul
+                            </label>
+
+                            <input
+                                type="text"
+                                id="galleryTitle"
+                                class="form-control"
+                                placeholder="Judul foto/video"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="galleryType">
+                                Jenis Media
+                            </label>
+
+                            <select
+                                id="galleryType"
+                                class="form-control"
+                            >
+
+                                <option value="image">
+                                    Foto
+                                </option>
+
+                                <option value="video">
+                                    Video
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group full">
+
+                            <label for="galleryFile">
+                                Pilih Foto / Video
+                            </label>
+
+                            <input
+                                type="file"
+                                id="galleryFile"
+                                class="form-control"
+                                accept="image/*,video/*"
+                                required
+                            >
+
+                            <div class="help-text">
+                                File akan diupload ke Cloudinary.
+                            </div>
+
+                            <div
+                                id="galleryPreview"
+                                class="preview-box"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            ☁️ Upload ke Galeri
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                <div
+                    style="
+                        margin-top:25px;
+                        border-top:1px solid #e5e7eb;
+                        padding-top:20px;
+                    "
+                >
+
+                    <h3
+                        style="
+                            color:#14532d;
+                            font-size:16px;
+                            margin-bottom:15px;
+                        "
+                    >
+                        Data Galeri
+                    </h3>
+
+
+                    <div
+                        id="galleryList"
+                        class="item-grid"
+                    >
+
+                        <div class="loading">
+                            <span class="spinner"></span>
+                            Memuat galeri...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         FIREBASE / ADMIN SCRIPT
+    ========================= -->
+
+    <script type="module">
+
+        import { auth } from "../js/firebase-config.js";
+
+        import {
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+        const adminEmail = document.getElementById("adminEmail");
+
+
+        /*
+         * Pastikan hanya user yang sudah login
+         * yang bisa membuka dashboard.
+         */
+
+        onAuthStateChanged(auth, (user) => {
+
+            if (!user) {
+
+                window.location.href = "../index.html";
+
+                return;
+            }
+
+
+            if (adminEmail) {
+
+                adminEmail.textContent =
+                    user.email || "Admin";
+
+            }
+
+        });
+
+
+        /*
+         * SIDEBAR MOBILE
+         */
+
+        const mobileMenuBtn =
+            document.getElementById("mobileMenuBtn");
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+
+        if (mobileMenuBtn) {
+
+            mobileMenuBtn.addEventListener(
+                "click",
+                () => {
+
+                    sidebar.classList.toggle("open");
+
+                }
+            );
+
+        }
+
+
+        /*
+         * CLOSE SIDEBAR SAAT LINK DIKLIK
+         */
+
+        document
+            .querySelectorAll(".nav-menu a")
+            .forEach(link => {
+
+                link.addEventListener(
+                    "click",
+                    () => {
+
+                        sidebar.classList.remove("open");
+
+                    }
+                );
+
+            });
+
+
+        /*
+         * ACTIVE MENU
+         */
+
+        const navLinks =
+            document.querySelectorAll(
+                '.nav-menu a[href^="#"]'
+            );
+
+
+        navLinks.forEach(link => {
+
+            link.addEventListener(
+                "click",
+                () => {
+
+                    navLinks.forEach(item =>
+                        item.classList.remove("active")
+                    );
+
+                    link.classList.add("active");
+
+                }
+            );
+
+        });
+
+
+        /*
+         * PREVIEW FOTO PEMERINTAHAN
+         */
+
+        const governmentImage =
+            document.getElementById(
+                "governmentImage"
+            );
+
+        const governmentImagePreview =
+            document.getElementById(
+                "governmentImagePreview"
+            );
+
+
+        governmentImage?.addEventListener(
+            "change",
+            function () {
+
+                const file = this.files?.[0];
+
+                if (!file) {
+
+                    governmentImagePreview.innerHTML = "";
+
+                    return;
+
+                }
+
+
+                if (!file.type.startsWith("image/")) {
+
+                    governmentImagePreview.innerHTML =
+                        '<div class="help-text">File harus berupa gambar.</div>';
+
+                    return;
+
+                }
+
+
+                const url =
+                    URL.createObjectURL(file);
+
+
+                governmentImagePreview.innerHTML = `
+                    <img
+                        src="${url}"
+                        class="preview-image"
+                        alt="Preview foto"
+                    >
+                `;
+
+            }
+        );
+
+
+        /*
+         * PREVIEW FOTO PERANGKAT
+         */
+
+        const officialImage =
+            document.getElementById(
+                "officialImage"
+            );
+
+        const officialImagePreview =
+            document.getElementById(
+                "officialImagePreview"
+            );
+
+
+        officialImage?.addEventListener(
+            "change",
+            function () {
+
+                const file = this.files?.[0];
+
+                if (!file) {
+
+                    officialImagePreview.innerHTML = "";
+
+                    return;
+
+                }
+
+
+                if (!file.type.startsWith("image/")) {
+
+                    officialImagePreview.innerHTML =
+                        '<div class="help-text">File harus berupa gambar.</div>';
+
+                    return;
+
+                }
+
+
+                const url =
+                    URL.createObjectURL(file);
+
+
+                officialImagePreview.innerHTML = `
+                    <img
+                        src="${url}"
+                        class="preview-image"
+                        alt="Preview foto"
+                    >
+                `;
+
+            }
+        );
+
+
+        /*
+         * PREVIEW POTENSI
+         */
+
+        const potentialMedia =
+            document.getElementById(
+                "potentialMedia"
+            );
+
+        const potentialMediaType =
+            document.getElementById(
+                "potentialMediaType"
+            );
+
+        const potentialMediaPreview =
+            document.getElementById(
+                "potentialMediaPreview"
+            );
+
+
+        potentialMedia?.addEventListener(
+            "change",
+            function () {
+
+                const file = this.files?.[0];
+
+                if (!file) {
+
+                    potentialMediaPreview.innerHTML = "";
+
+                    return;
+
+                }
+
+
+                const selectedType =
+                    potentialMediaType.value;
+
+
+                const url =
+                    URL.createObjectURL(file);
+
+
+                if (selectedType === "video") {
+
+                    potentialMediaPreview.innerHTML = `
+                        <video
+                            src="${url}"
+                            class="preview-video"
+                            controls
+                        ></video>
+                    `;
+
+                } else {
+
+                    potentialMediaPreview.innerHTML = `
+                        <img
+                            src="${url}"
+                            class="preview-image"
+                            alt="Preview media"
+                        >
+                    `;
+
+                }
+
+            }
+        );
+
+
+        /*
+         * Jika jenis media berubah,
+         * reset preview.
+         */
+
+        potentialMediaType?.addEventListener(
+            "change",
+            () => {
+
+                potentialMediaPreview.innerHTML = "";
+
+                if (potentialMedia) {
+                    potentialMedia.value = "";
+                }
+
+            }
+        );
+
+
+        /*
+         * PREVIEW GALERI
+         */
+
+        const galleryFile =
+            document.getElementById(
+                "galleryFile"
+            );
+
+        const galleryType =
+            document.getElementById(
+                "galleryType"
+            );
+
+        const galleryPreview =
+            document.getElementById(
+                "galleryPreview"
+            );
+
+
+        galleryFile?.addEventListener(
+            "change",
+            function () {
+
+                const file = this.files?.[0];
+
+                if (!file) {
+
+                    galleryPreview.innerHTML = "";
+
+                    return;
+
+                }
+
+
+                const url =
+                    URL.createObjectURL(file);
+
+
+                if (galleryType.value === "video") {
+
+                    galleryPreview.innerHTML = `
+                        <video
+                            src="${url}"
+                            class="preview-video"
+                            controls
+                        ></video>
+                    `;
+
+                } else {
+
+                    galleryPreview.innerHTML = `
+                        <img
+                            src="${url}"
+                            class="preview-image"
+                            alt="Preview galeri"
+                        >
+                    `;
+
+                }
+
+            }
+        );
+
+
+        galleryType?.addEventListener(
+            "change",
+            () => {
+
+                galleryPreview.innerHTML = "";
+
+                if (galleryFile) {
+                    galleryFile.value = "";
+                }
+
+            }
+        );
+
+
+        /*
+         * RESET PEMERINTAHAN
+         */
+
+        document
+            .getElementById("resetGovernmentBtn")
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .getElementById("governmentForm")
+                        ?.reset();
+
+                    governmentImagePreview.innerHTML = "";
+
+                }
+            );
+
+
+        /*
+         * FORM PERANGKAT
+         */
+
+        const officialFormWrapper =
+            document.getElementById(
+                "officialFormWrapper"
+            );
+
+
+        document
+            .getElementById("newOfficialBtn")
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    officialFormWrapper.style.display =
+                        "block";
+
+                    document
+                        .getElementById(
+                            "officialForm"
+                        )
+                        ?.reset();
+
+                    document
+                        .getElementById(
+                            "officialId"
+                        )
+                        .value = "";
+
+                    document
+                        .getElementById(
+                            "officialFormTitle"
+                        )
+                        .textContent =
+                            "Tambah Perangkat Desa";
+
+                    officialImagePreview.innerHTML = "";
+
+                    officialFormWrapper.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+
+                }
+            );
+
+
+        document
+            .getElementById("cancelOfficialBtn")
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    officialFormWrapper.style.display =
+                        "none";
+
+                }
+            );
+
+
+        /*
+         * FORM POTENSI
+         */
+
+        const potentialFormWrapper =
+            document.getElementById(
+                "potentialFormWrapper"
+            );
+
+
+        document
+            .getElementById("newPotentialBtn")
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    potentialFormWrapper.style.display =
+                        "block";
+
+                    document
+                        .getElementById(
+                            "potentialForm"
+                        )
+                        ?.reset();
+
+                    document
+                        .getElementById(
+                            "potentialId"
+                        )
+                        .value = "";
+
+                    document
+                        .getElementById(
+                            "potentialFormTitle"
+                        )
+                        .textContent =
+                            "Tambah Potensi Desa";
+
+                    potentialMediaPreview.innerHTML = "";
+
+                    potentialFormWrapper.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+
+                }
+            );
+
+
+        document
+            .getElementById("cancelPotentialBtn")
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    potentialFormWrapper.style.display =
+                        "none";
+
+                }
+            );
+
+
+        /*
+         * GLOBAL ALERT
+         */
+
+        window.showAdminAlert =
+            function(message, type = "success") {
+
+                const alertBox =
+                    document.getElementById(
+                        "alertBox"
+                    );
+
+                if (!alertBox) return;
+
+                alertBox.className = type;
+
+                alertBox.textContent = message;
+
+                alertBox.style.display = "block";
+
+
+                setTimeout(() => {
+
+                    alertBox.style.display =
+                        "none";
+
+                }, 5000);
+
+            };
+
+    </script>
+
+
+    <!--
+        FILE INI MENANGANI:
+
+        - Firebase Auth
+        - Firestore
+        - Cloudinary
+        - Pemerintahan
+        - Perangkat Desa
+        - Potensi
+        - Galeri
+    -->
+
+    <script
+        type="module"
+        src="../js/admin.js"
+    ></script>
+
+</body>
+</html>
